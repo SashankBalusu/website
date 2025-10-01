@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sashank | Personal Site</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bellefair&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --ink:#111;
+      --tint: rgba(255,255,255,0.65);   /* glass tint */
+      --hairline: rgba(0,0,0,0.06);     /* bottom border */
+      --hover:#111;                     /* link hover underline */
+    }
+
+    * { box-sizing: border-box; }
+    body{
+      margin:0;
+      font-family: 'Bellefair', Arial;
+      color:var(--ink);
+      background:#fff;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    /* Background photo locked to the right side */
+    .bg-photo{ position:fixed; inset:0; pointer-events:none; z-index:0; }
+    .bg-photo img{
+      position:absolute; right:0; top:50%; transform:translateY(-50%);
+      height:100vh; width:auto; object-fit:cover;
+    }
+    .bg-photo .fade{
+      position:absolute; inset:0; pointer-events:none;
+      background:linear-gradient(90deg,#fff 0%, rgba(255,255,255,0.85) 64%, rgba(255,255,255,0.1) 88%, rgba(255,255,255,0) 100%);
+    }
+
+    .nav{
+      position:fixed; top:0; left:0; right:0; height:56px;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 24px;
+      background:var(--tint);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      z-index:10;
+      overflow:visible;
+    }
+    .nav::after{
+      content:"";
+      position:absolute; left:0; right:0; top:0;
+      height:1px;
+      background:linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.9) 30%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.9) 70%, transparent 100%);
+      opacity:.6;
+      mix-blend-mode:screen;
+      animation: sweep 6s linear infinite;
+    }
+    @keyframes sweep {
+      0%   { transform: translateX(-20%); opacity:.4; }
+      50%  { transform: translateX(0%);   opacity:.7; }
+      100% { transform: translateX(20%);  opacity:.4; }
+    }
+    @media (prefers-reduced-motion: reduce){
+      .nav::after{ animation:none; }
+    }
+
+    .brand{
+      font-size:22px; letter-spacing:.02em;
+      display:flex; align-items:center; gap:10px;
+      user-select:none;
+    }
+
+    .tabs{
+      display:flex; align-items:center; gap:18px;
+    }
+    .tabs a{
+      position:relative;
+      text-decoration:none;
+      color:var(--ink);
+      font-size:18px;
+      padding:6px 2px;
+    }
+    .tabs a::after{
+      content:"";
+      position:absolute; left:0; right:0; bottom:-2px; height:1px;
+      background: currentColor;
+      transform:scaleX(0);
+      transform-origin:left;
+      transition: transform .25s ease;
+      opacity:.9;
+    }
+    .tabs a:hover::after,
+    .tabs a:focus-visible::after{
+      transform:scaleX(1);
+    }
+
+    .content{
+      position:relative; z-index:2;
+      padding: calc(56px + 24px) 6vw 10vh clamp(32px, 6vw, 64px);
+      max-width:920px;
+    }
+    .content h1{ font-size:56px; font-weight:400; letter-spacing:.02em; margin:0 0 20px; }
+    .content p{ font-size:18px; margin:0 0 40px; }
+    .section{ margin:48px 0; }
+    .section h2{ font-size:24px; font-weight:400; margin:0 0 12px; }
+    .section ul{ list-style:none; margin:0; padding:0; }
+    .section li{ margin-bottom:8px; font-size:16px; }
+
+    @media (max-width: 860px){
+      .nav{ height:52px; padding:0 16px; }
+      .brand{ font-size:20px; }
+      .tabs a{ font-size:17px; }
+      .content{ padding: calc(52px + 20px) 24px 10vh 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-photo" aria-hidden="true">
+    <img src="flower3.png" alt="Background portrait"/>
+    <div class="fade"></div>
+  </div>
+
+  <!-- Top navigation -->
+  <header class="nav" role="navigation" aria-label="Primary">
+    <div class="brand">
+      <span>Sashank Balusu</span>
+    </div>
+    <nav class="tabs">
+      <a href="drone.html">Pictures</a>
+      <!-- <a href="thoughts.html">Thoughts</a> -->
+    </nav>
+  </header>
+
+  <main class="content">
+    <h1>Hi, I'm Sashank.</h1>
+    <p>I like drones, photography, and the Chargers. I also study EECS at Berkeley.</p>
+
+    <section class="section" id="experience">
+      <h3>Work: </h2>
+      <ul>
+        <li>Founding Engineer @ Biography</li>
+        <ul>
+          <li>- <a target="_blank" href="https://biography.industries">biography.industries</a></li>
+        </ul>
+        <li>Backend @ Amazon</li>
+        <ul>
+          <li>- Transaction persistence & automated orphaned files cleanup on <a target="_blank"href = "https://github.com/ray-project/deltacat">DeltaCat 2.0</a></li>
+        </ul>
+      </ul>
+
+      <h3>Some time ago: </h2>
+        <ul>
+          <li>Debate national champion, top 3 in CA for 3 years</li>
+          <li><a target = "_blank" href = "https://github.com/SashankBalusu/Sleeper-Trade-An">Math</a> won me my fantasy football league</li>
+          <li>4x Hackathon winner (UPenn, UCSC, and others)</li>
+          <li>- Semiprofessional <a target = "_blank" href = "https://instagram.com/sashublendz">barber</a></li>
+
+        </ul>
+  
+      <h3>Contact: </h2>
+        <ul>
+          <li><a target = "_blank" href = "https://linkedin.com/in/SashankBalusu">Linkedin,</a></li>
+          <li><a target = "_blank" href ="https://github.com/SashankBalusu">Github,</a></li>
+          <li>sashankbalusu@gmail.com</li>
+        </ul>
+    </section>
+
+    <section class="section" id="projects">
+    </section>
+  </main>
+</body>
+</html>

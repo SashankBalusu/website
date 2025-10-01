@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sashank | Drone Photos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bellefair&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --ink:#111;
+      --tint: rgba(255,255,255,0.65);
+      --gap: 28px; 
+      --nav-h: 56px;
+      --cols: 3;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family:'Bellefair', Arial, sans-serif;
+      color:var(--ink);
+      background:#fff;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:optimizeLegibility;
+    }
+
+    .nav{
+      position:fixed; inset:0 0 auto 0; height:var(--nav-h);
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 24px;
+      background:var(--tint);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      z-index:10;
+    }
+    .brand{ font-size:22px; }
+    .tabs{ display:flex; gap:18px; }
+    .tabs a{ color:var(--ink); text-decoration:none; font-size:18px; position:relative; }
+    .tabs a::after{
+      content:""; position:absolute; left:0; right:0; bottom:-2px; height:1px;
+      background: currentColor; transform:scaleX(0); transform-origin:left; transition:.25s;
+    }
+    .tabs a:hover::after, .tabs a[aria-current="page"]::after{ transform:scaleX(1); }
+
+    main{ padding-top: calc(var(--nav-h) + 18px); }
+    .gallery{ padding: 0 clamp(16px, 4vw, 48px) 72px; }
+
+    .columns{
+      display: grid;
+      grid-template-columns: repeat(var(--cols), 1fr);
+      gap: var(--gap);
+      align-items: start; 
+    }
+    .col{
+      display: flex;
+      flex-direction: column;
+      gap: var(--gap);
+      min-width: 0;
+    }
+
+    .tile{
+      position: relative;
+      overflow: hidden; 
+      background:#f6f6f6;
+      box-shadow: 0 6px 18px rgba(0,0,0,.08);
+    }
+    .tile img{
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform .35s ease;
+    }
+    .tile:hover img{ transform: scale(1.04); }
+
+    .lightbox{
+  position: fixed; inset:0; display:none; place-items:center;
+  background: rgba(0,0,0,.75);
+  z-index: 50;
+  padding: clamp(12px, 4vw, 40px);
+}
+
+.lightbox.open{ display:grid; }
+
+.lightbox-content{
+  position: relative;
+  display: inline-block;
+}
+
+.lightbox img{
+  max-width:100%;
+  max-height: 86vh;
+  box-shadow: 0 10px 40px rgba(0,0,0,.35);
+  background:#000;
+}
+
+.lightbox .close{
+  position:absolute;
+  top:8px;
+  right:8px;
+  font-size:28px;
+  color:#000000;
+  cursor:pointer;
+  line-height:1;
+  background: rgb(255, 255, 255);
+  border:none;
+  width:36px;
+  height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.brand a{ color:var(--ink); text-decoration:none; position:relative; }
+
+
+
+    @media (max-width: 860px){
+      :root{ --nav-h: 52px; }
+      .nav{ padding:0 16px; }
+      .brand{ font-size:20px; }
+      .tabs a{ font-size:17px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="brand"><a href = "index.html">Sashank Balusu</a></div>
+    <nav class="tabs">
+      <a href="drone.html" aria-current="page">Pictures</a>
+      <!-- <a href="thoughts.html">Thoughts</a> -->
+    </nav>
+  </header>
+
+  <main>
+    <section class="gallery">
+      <div id="columns" class="columns"></div>
+    </section>
+  </main>
+
+  <div id="lightbox" class="lightbox">
+    <div class="lightbox-content">
+      <button class="close" aria-label="Close">&times;</button>
+      <img id="lightbox-img" alt="">
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      const imageOrder = [
+      "drone12.JPG",
+      "drone4.JPG", 
+      "drone17.JPG",
+      "drone11.JPG",
+      "drone16.JPG",
+      "drone6.JPG",
+      "drone3.JPG",
+      "drone9.JPG",
+      "drone14.JPG",
+      "drone1.JPG",
+      "drone15.JPG",
+      "drone13.JPG",
+      "drone2.JPG",
+      "drone5.JPG",
+      "drone7.JPG",
+      "drone10.JPG",
+      "drone8.JPG",   
+      ];
+
+      function computeCols(width){
+        if(width >= 1600) return 3;
+        if(width >= 1200) return 2;
+        return 1; 
+      }
+
+      const columnsRoot = document.getElementById('columns');
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const closeBtn = lightbox.querySelector('.close');
+
+      let colEls = [];
+      let resizeTimer;
+
+      function setCols(n){
+        columnsRoot.style.setProperty('--cols', n);
+        columnsRoot.innerHTML = '';
+        colEls = Array.from({length:n}, ()=> {
+          const c = document.createElement('div');
+          c.className = 'col';
+          columnsRoot.appendChild(c);
+          return c;
+        });
+      }
+
+      function makeTile(src){
+        const fig = document.createElement('figure');
+        fig.className = 'tile';
+        const a = document.createElement('a');
+        a.href = src;
+        a.addEventListener('click', (e)=>{
+          e.preventDefault();
+          lightboxImg.src = src;
+          lightboxImg.alt = src.split('/').pop();
+          lightbox.classList.add('open');
+        });
+        const img = document.createElement('img');
+        img.alt = src.split('/').pop();
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.src = src;
+        a.appendChild(img);
+        fig.appendChild(a);
+        return fig;
+      }
+
+      function placeTileMasonry(tile){
+        const heights = colEls.map(col => col.scrollHeight);
+        const idx = heights.indexOf(Math.min(...heights));
+        colEls[idx].appendChild(tile);
+      }
+
+      function build(){
+        const cols = computeCols(window.innerWidth);
+        setCols(cols);
+        imageOrder.forEach(src => placeTileMasonry(makeTile(src)));
+      }
+
+      function onResize(){
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(build, 120);
+      }
+
+      closeBtn.addEventListener('click', ()=> lightbox.classList.remove('open'));
+      lightbox.addEventListener('click', (e)=>{ if(e.target===lightbox) lightbox.classList.remove('open'); });
+      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') lightbox.classList.remove('open'); });
+
+      build();
+      window.addEventListener('resize', onResize);
+    })();
+  </script>
+</body>
+</html>

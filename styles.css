@@ -1,0 +1,127 @@
+/* ===== Minimal, futuristic (no cards, no brackets, no gridlines bg) ===== */
+:root{
+  --bg:#fcfcfb;
+  --ink:#111111;
+  --muted:#666666;
+  --hair:#00000014;  /* ultra-light hairline */
+  --gap:22px;
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  font-family: inherit;         /* keep your existing font */
+  color:var(--ink);
+  background:var(--bg);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* ===== Shell keeps left nav exactly as you had ===== */
+.shell{
+  max-width:1100px;
+  margin:0 auto;
+  padding:24px;
+  display:grid;
+  grid-template-columns:220px 1fr;
+  gap:var(--gap);
+  align-items:start;
+}
+
+/* ===== Sidebar (unchanged look, just ensure no card styles) ===== */
+.sidebar{
+  position:sticky; top:24px;
+  background:transparent; border:none; border-radius:0; padding:0;
+}
+.sidebar .brand{ margin:4px 0 12px; }
+
+/* Nav: minimal underline on hover/active; no animations besides width change */
+nav ul{ list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+nav a{
+  text-decoration:none; color:var(--ink);
+  display:block; padding:6px 0; position:relative;
+}
+nav a::after{
+  content:""; position:absolute; left:0; bottom:-1px; height:1px; width:0%;
+  background:var(--ink);
+  transition:width 120ms ease;   /* subtle */
+}
+nav a:hover::after, nav a.active::after{ width:100%; }
+
+/* ===== Content ===== */
+.content{ padding-top:2px; }
+
+/* Headings: clean, unadorned */
+h1,h2,h3{ margin:0; font-weight:600; line-height:1.2; }
+h1{ font-size:26px; margin-bottom:8px; }
+h2{
+  margin-top:18px; margin-bottom:4px;
+  font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+}
+h3{ font-size:16px; margin-bottom:4px; }
+
+/* Paragraphs + meta */
+p{ margin:0 0 10px; }
+.meta{ color:var(--muted); font-size:12px; }
+
+/* Sections separated only by hairlines and rhythm */
+.section{ padding:10px 0; }
+.section + .section{ border-top:1px solid var(--hair); }
+
+/* Flat list rows to replace “cards” */
+.list{ display:grid; }
+.row{
+  display:flex; gap:12px; align-items:flex-start;
+  padding:10px 0;
+  border-top:1px solid var(--hair);
+}
+.list .row:first-child{ border-top:none; }
+.row .title{ font-weight:600; }
+.row .aside{ margin-left:auto; color:var(--muted); font-size:12px; }
+
+/* Posts (Thoughts) */
+.post{
+  padding:12px 0;
+  border-top:1px solid var(--hair);
+}
+.post:first-child{ border-top:none; }
+.post h3{ margin:0 0 2px; }
+
+/* Minimal link grid (no “tiles” look) */
+.link-grid{
+  display:grid; grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px; margin-top:6px;
+}
+.link-grid a{
+  display:block; text-decoration:none; color:var(--ink);
+  padding:8px 0;
+  border-bottom:1px dashed var(--hair);
+}
+.link-grid a:hover{ opacity:.8; }
+
+/* Drone images: plain frames, very subtle hover (no motion) */
+.grid{
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+.grid img{
+  width:100%; height:180px; object-fit:cover; display:block;
+  border:1px solid var(--hair); border-radius:6px;
+  transition:filter 120ms ease;   /* subtle only */
+}
+.grid img:hover{ filter:contrast(1.02) saturate(1.02); }
+
+/* Footer */
+.footer{ text-align:center; color:var(--muted); padding:24px 0 40px; }
+
+/* Responsive */
+@media (max-width:860px){
+  .shell{ grid-template-columns:1fr; }
+  .sidebar{ position:static; }
+  .grid{ grid-template-columns:1fr 1fr; }
+}
+@media (max-width:520px){
+  .grid{ grid-template-columns:1fr; }
+}

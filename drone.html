@@ -15,6 +15,9 @@
     }
 
     *{ box-sizing:border-box; }
+
+    /* iOS Safari niceties */
+    html, body { height: 100%; }
     body{
       margin:0;
       font-family:'Bellefair', Arial, sans-serif;
@@ -22,6 +25,9 @@
       background:#fff;
       -webkit-font-smoothing:antialiased;
       text-rendering:optimizeLegibility;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: none;
+      overflow-x: hidden;
     }
 
     .nav{
@@ -32,6 +38,10 @@
       backdrop-filter:blur(10px);
       -webkit-backdrop-filter:blur(10px);
       z-index:10;
+
+      /* help Safari compositing / reduce jank */
+      will-change: transform;
+      transform: translateZ(0);
     }
     .brand{ font-size:22px; }
     .tabs{ display:flex; gap:18px; }
@@ -72,46 +82,63 @@
     }
     .tile:hover img{ transform: scale(1.04); }
 
+    /* ---- Lightbox with animation + scroll lock friendly ---- */
     .lightbox{
-  position: fixed; inset:0; display:none; place-items:center;
-  background: rgba(0,0,0,.75);
-  z-index: 50;
-  padding: clamp(12px, 4vw, 40px);
-}
+      position: fixed; inset:0;
+      display:grid; place-items:center;
+      background: rgba(0,0,0,.75);
+      z-index: 50;
+      padding: clamp(12px, 4vw, 40px);
 
-.lightbox.open{ display:grid; }
+      /* use opacity/visibility so we can animate (not display:none) */
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity .25s ease, visibility .25s ease;
+    }
+    .lightbox.open{
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
 
-.lightbox-content{
-  position: relative;
-  display: inline-block;
-}
+    .lightbox-content{
+      position: relative;
+      display: inline-block;
 
-.lightbox img{
-  max-width:100%;
-  max-height: 86vh;
-  box-shadow: 0 10px 40px rgba(0,0,0,.35);
-  background:#000;
-}
+      /* slide/zoom-in entrance */
+      transform: translateY(12px) scale(.98);
+      transition: transform .25s ease;
+    }
+    .lightbox.open .lightbox-content{
+      transform: translateY(0) scale(1);
+    }
 
-.lightbox .close{
-  position:absolute;
-  top:8px;
-  right:8px;
-  font-size:28px;
-  color:#000000;
-  cursor:pointer;
-  line-height:1;
-  background: rgb(255, 255, 255);
-  border:none;
-  width:36px;
-  height:36px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.brand a{ color:var(--ink); text-decoration:none; position:relative; }
+    .lightbox img{
+      max-width:100%;
+      max-height: 86vh;
+      box-shadow: 0 10px 40px rgba(0,0,0,.35);
+      background:#000;
+    }
 
+    .lightbox .close{
+      position:absolute;
+      top:8px;
+      right:8px;
+      font-size:28px;
+      color:#000;
+      cursor:pointer;
+      line-height:1;
+      background:#fff;
+      border:none;
+      width:36px;
+      height:36px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
 
+    .brand a{ color:var(--ink); text-decoration:none; position:relative; }
 
     @media (max-width: 860px){
       :root{ --nav-h: 52px; }
@@ -123,7 +150,7 @@
 </head>
 <body>
   <header class="nav">
-    <div class="brand"><a href = "index.html">Sashank Balusu</a></div>
+    <div class="brand"><a href="index.html">Sashank Balusu</a></div>
     <nav class="tabs">
       <a href="drone.html" aria-current="page">Pictures</a>
       <!-- <a href="thoughts.html">Thoughts</a> -->
@@ -136,7 +163,7 @@
     </section>
   </main>
 
-  <div id="lightbox" class="lightbox">
+  <div id="lightbox" class="lightbox" aria-hidden="true">
     <div class="lightbox-content">
       <button class="close" aria-label="Close">&times;</button>
       <img id="lightbox-img" alt="">
@@ -146,23 +173,9 @@
   <script>
     (function(){
       const imageOrder = [
-      "drone12.JPG",
-      "drone4.JPG", 
-      "drone17.JPG",
-      "drone11.JPG",
-      "drone16.JPG",
-      "drone6.JPG",
-      "drone3.JPG",
-      "drone9.JPG",
-      "drone14.JPG",
-      "drone1.JPG",
-      "drone15.JPG",
-      "drone13.JPG",
-      "drone2.JPG",
-      "drone5.JPG",
-      "drone7.JPG",
-      "drone10.JPG",
-      "drone8.JPG",   
+        "drone12.JPG","drone4.JPG","drone17.JPG","drone11.JPG","drone16.JPG","drone6.JPG",
+        "drone3.JPG","drone9.JPG","drone14.JPG","drone1.JPG","drone15.JPG","drone13.JPG",
+        "drone2.JPG","drone5.JPG","drone7.JPG","drone10.JPG","drone8.JPG"
       ];
 
       function computeCols(width){
@@ -178,11 +191,14 @@
 
       let colEls = [];
       let resizeTimer;
+      let currentCols = 0;
+      let lastWidth = window.innerWidth;
 
+      /* ---------- Masonry helpers ---------- */
       function setCols(n){
         columnsRoot.style.setProperty('--cols', n);
         columnsRoot.innerHTML = '';
-        colEls = Array.from({length:n}, ()=> {
+        colEls = Array.from({length:n}, () => {
           const c = document.createElement('div');
           c.className = 'col';
           columnsRoot.appendChild(c);
@@ -197,9 +213,7 @@
         a.href = src;
         a.addEventListener('click', (e)=>{
           e.preventDefault();
-          lightboxImg.src = src;
-          lightboxImg.alt = src.split('/').pop();
-          lightbox.classList.add('open');
+          openLightbox(src);
         });
         const img = document.createElement('img');
         img.alt = src.split('/').pop();
@@ -217,22 +231,66 @@
         colEls[idx].appendChild(tile);
       }
 
-      function build(){
+      function build(force = false){
         const cols = computeCols(window.innerWidth);
+        if (!force && cols === currentCols) return; // 👉 only rebuild if count changed
+        currentCols = cols;
+
         setCols(cols);
         imageOrder.forEach(src => placeTileMasonry(makeTile(src)));
       }
 
+      /* ---------- Resize handling (iOS Safari safe) ---------- */
       function onResize(){
+        const w = window.innerWidth;
+        if (w === lastWidth) return; // 👉 ignore height-only resizes from toolbar
+        lastWidth = w;
         clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(build, 120);
+        resizeTimer = setTimeout(() => build(false), 150);
       }
 
-      closeBtn.addEventListener('click', ()=> lightbox.classList.remove('open'));
-      lightbox.addEventListener('click', (e)=>{ if(e.target===lightbox) lightbox.classList.remove('open'); });
-      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') lightbox.classList.remove('open'); });
+      /* ---------- Lightbox + scroll lock ---------- */
+      let scrollY = 0;
+      function lockScroll(){
+        scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${scrollY}px`;
+        document.body.style.left = '0';
+        document.body.style.right = '0';
+        document.body.style.width = '100%';
+      }
+      function unlockScroll(){
+        document.documentElement.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.left = '';
+        document.body.style.right = '';
+        document.body.style.width = '';
+        window.scrollTo(0, scrollY);
+      }
 
-      build();
+      function openLightbox(src){
+        lightboxImg.src = src;
+        lightboxImg.alt = src.split('/').pop();
+        lightbox.classList.add('open');
+        lightbox.setAttribute('aria-hidden','false');
+        lockScroll();
+      }
+
+      function closeLightbox(){
+        lightbox.classList.remove('open');
+        lightbox.setAttribute('aria-hidden','true');
+        // wait a tick so the fade-out can start before unlocking scroll
+        setTimeout(unlockScroll, 10);
+      }
+
+      closeBtn.addEventListener('click', closeLightbox);
+      lightbox.addEventListener('click', (e)=>{ if(e.target===lightbox) closeLightbox(); });
+      document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeLightbox(); });
+
+      /* ---------- Init ---------- */
+      build(true);
       window.addEventListener('resize', onResize);
     })();
   </script>

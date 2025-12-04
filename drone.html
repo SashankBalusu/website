@@ -77,6 +77,8 @@
       box-shadow: 0 6px 18px rgba(0,0,0,.08);
     }
     .tile img{
+      /* background: #eee;
+      transition: filter .35s ease; */
       width: 100%;
       height: auto;
       display: block;
@@ -173,7 +175,13 @@
   </div>
 
   <script>
+    let imageMeta = {};
+
     (function(){
+      fetch('./public/imageMeta.json')
+      .then(r => r.ok ? r.json() : {})
+      .then(meta => { imageMeta = meta || {}; build(true); })
+      .catch(() => build(true));
       const imageOrder = [
         "drone19.JPG", "drone18.JPG", "drone20.JPG", "drone4.JPG","drone17.JPG","drone11.JPG","drone16.JPG","drone6.JPG",
         "drone3.JPG","drone9.JPG","drone14.JPG","drone1.JPG","drone15.JPG","drone13.JPG",
@@ -208,24 +216,46 @@
         });
       }
 
-      function makeTile(src){
+      function makeTile(src, i){
         const fig = document.createElement('figure');
         fig.className = 'tile';
+
         const a = document.createElement('a');
-        a.href = src;
+        a.href = src; // keep full-res for lightbox
         a.addEventListener('click', (e)=>{
           e.preventDefault();
           openLightbox(src);
         });
-        const img = document.createElement('img');
-        img.alt = src.split('/').pop();
-        img.loading = 'lazy';
-        img.decoding = 'async';
-        img.src = src;
-        a.appendChild(img);
+
+        const meta = imageMeta[src] || { w: 1600, h: 1066, lqip: '' };
+        const base = src;
+        const thumbPath = './public/thumbs';
+
+        const picture = document.createElement('picture');
+        picture.innerHTML = `
+          <source type="image/avif"
+            srcset="${thumbPath}/1600w/${base}.avif 1600w, ${thumbPath}/960w/${base}.avif 960w, ${thumbPath}/480w/${base}.avif 480w">
+          <source type="image/webp"
+            srcset="${thumbPath}/1600w/${base}.webp 1600w, ${thumbPath}/960w/${base}.webp 960w, ${thumbPath}/480w/${base}.webp 480w">
+          <img
+            src="${thumbPath}/960w/${base}.jpg"
+            srcset="${thumbPath}/1600w/${base}.jpg 1600w, ${thumbPath}/960w/${base}.jpg 960w, ${thumbPath}/480w/${base}.jpg 480w"
+            sizes="(min-width:1600px) 33vw, (min-width:1200px) 50vw, 100vw"
+            width="${meta.w}" height="${meta.h}"
+            alt="${src.split('/').pop()}"
+            loading="lazy" decoding="async"
+            style="background: url('${meta.lqip || ''}') center/cover no-repeat;"
+          >
+        `;
+
+        const img = picture.querySelector('img');
+        if (i < 3) img.fetchPriority = 'high'; // speed up above-the-fold
+
+        a.appendChild(picture);
         fig.appendChild(a);
         return fig;
       }
+
 
       function placeTileMasonry(tile){
         const heights = colEls.map(col => col.scrollHeight);
@@ -239,7 +269,7 @@
         currentCols = cols;
 
         setCols(cols);
-        imageOrder.forEach(src => placeTileMasonry(makeTile(src)));
+        imageOrder.forEach((src, i) => placeTileMasonry(makeTile(src, i)));
       }
 
       /* ---------- Resize handling (iOS Safari safe) ---------- */
@@ -292,7 +322,6 @@
       document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeLightbox(); });
 
       /* ---------- Init ---------- */
-      build(true);
       window.addEventListener('resize', onResize);
     })();
   </script>

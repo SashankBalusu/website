@@ -18,11 +18,10 @@
 
     *{ box-sizing:border-box; }
 
-    /* iOS Safari niceties */
     html, body { height: 100%; }
     body{
       margin:0;
-      font-family:'Bellefair', Arial, sans-serif;
+      letter-spacing: -0.05em;
       color:var(--ink);
       background:#fff;
       -webkit-font-smoothing:antialiased;
@@ -41,7 +40,6 @@
       -webkit-backdrop-filter:blur(10px);
       z-index:10;
 
-      /* help Safari compositing / reduce jank */
       will-change: transform;
       transform: translateZ(0);
     }
@@ -77,8 +75,7 @@
       box-shadow: 0 6px 18px rgba(0,0,0,.08);
     }
     .tile img{
-      /* background: #eee;
-      transition: filter .35s ease; */
+
       width: 100%;
       height: auto;
       display: block;
@@ -86,7 +83,6 @@
     }
     .tile:hover img{ transform: scale(1.04); }
 
-    /* ---- Lightbox with animation + scroll lock friendly ---- */
     .lightbox{
       position: fixed; inset:0;
       display:grid; place-items:center;
@@ -94,7 +90,6 @@
       z-index: 50;
       padding: clamp(12px, 4vw, 40px);
 
-      /* use opacity/visibility so we can animate (not display:none) */
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
@@ -110,7 +105,6 @@
       position: relative;
       display: inline-block;
 
-      /* slide/zoom-in entrance */
       transform: translateY(12px) scale(.98);
       transition: transform .25s ease;
     }
@@ -157,7 +151,6 @@
     <div class="brand"><a href="index.html">Sashank Balusu</a></div>
     <nav class="tabs">
       <a href="drone.html" aria-current="page">Pictures</a>
-      <!-- <a href="thoughts.html">Thoughts</a> -->
     </nav>
   </header>
 
@@ -204,7 +197,6 @@
       let currentCols = 0;
       let lastWidth = window.innerWidth;
 
-      /* ---------- Masonry helpers ---------- */
       function setCols(n){
         columnsRoot.style.setProperty('--cols', n);
         columnsRoot.innerHTML = '';
@@ -221,7 +213,7 @@
         fig.className = 'tile';
 
         const a = document.createElement('a');
-        a.href = src; // keep full-res for lightbox
+        a.href = src;
         a.addEventListener('click', (e)=>{
           e.preventDefault();
           openLightbox(src);
@@ -249,7 +241,7 @@
         `;
 
         const img = picture.querySelector('img');
-        if (i < 3) img.fetchPriority = 'high'; // speed up above-the-fold
+        if (i < 3) img.fetchPriority = 'high'; 
 
         a.appendChild(picture);
         fig.appendChild(a);
@@ -265,23 +257,21 @@
 
       function build(force = false){
         const cols = computeCols(window.innerWidth);
-        if (!force && cols === currentCols) return; // 👉 only rebuild if count changed
+        if (!force && cols === currentCols) return;
         currentCols = cols;
 
         setCols(cols);
         imageOrder.forEach((src, i) => placeTileMasonry(makeTile(src, i)));
       }
 
-      /* ---------- Resize handling (iOS Safari safe) ---------- */
       function onResize(){
         const w = window.innerWidth;
-        if (w === lastWidth) return; // 👉 ignore height-only resizes from toolbar
+        if (w === lastWidth) return; 
         lastWidth = w;
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => build(false), 150);
       }
 
-      /* ---------- Lightbox + scroll lock ---------- */
       let scrollY = 0;
       function lockScroll(){
         scrollY = window.scrollY || document.documentElement.scrollTop || 0;
@@ -313,7 +303,6 @@
       function closeLightbox(){
         lightbox.classList.remove('open');
         lightbox.setAttribute('aria-hidden','true');
-        // wait a tick so the fade-out can start before unlocking scroll
         setTimeout(unlockScroll, 10);
       }
 
@@ -321,7 +310,6 @@
       lightbox.addEventListener('click', (e)=>{ if(e.target===lightbox) closeLightbox(); });
       document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeLightbox(); });
 
-      /* ---------- Init ---------- */
       window.addEventListener('resize', onResize);
     })();
   </script>

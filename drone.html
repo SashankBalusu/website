@@ -178,7 +178,7 @@
     let imageMeta = {};
 
     (function(){
-      fetch('./public/imageMeta.json')
+      fetch('./assets/imageMeta.json')
       .then(r => r.ok ? r.json() : {})
       .then(meta => { imageMeta = meta || {}; build(true); })
       .catch(() => build(true));
@@ -229,7 +229,7 @@
 
         const meta = imageMeta[src] || { w: 1600, h: 1066, lqip: '' };
         const base = src;
-        const thumbPath = './public/thumbs';
+        const thumbPath = './assets/thumbs';
 
         const picture = document.createElement('picture');
         picture.innerHTML = `

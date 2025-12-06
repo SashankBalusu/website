@@ -1,9 +1,9 @@
 /* ===== Minimal, futuristic (no cards, no brackets, no gridlines bg) ===== */
 :root{
-  --bg:#fcfcfb;
-  --ink:#111111;
-  --muted:#666666;
-  --hair:#00000014;  /* ultra-light hairline */
+  --bg:#000000;
+  --ink:#ffffff;
+  --muted:#828282;
+  --hair:#ffffff14;  /* ultra-light hairline */
   --gap:22px;
 }
 
@@ -112,4 +112,7 @@ p{ margin:0 0 10px; }
 }
 @media (max-width:520px){
   .grid{ grid-template-columns:1fr; }
+}
+a:-webkit-any-link {
+  color: pink;
 }

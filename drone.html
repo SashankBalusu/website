@@ -9,8 +9,8 @@
 
   <style>
     :root{
-      --ink:#111;
-      --tint: rgba(255,255,255,0.65);
+      --ink:#ffffff;
+      --tint: rgba(0, 0, 0, 0.65);
       --gap: 28px; 
       --nav-h: 56px;
       --cols: 3;
@@ -23,7 +23,7 @@
       margin:0;
       letter-spacing: -0.05em;
       color:var(--ink);
-      background:#fff;
+      background:#000000;
       -webkit-font-smoothing:antialiased;
       text-rendering:optimizeLegibility;
       -webkit-overflow-scrolling: touch;
@@ -71,8 +71,8 @@
     .tile{
       position: relative;
       overflow: hidden; 
-      background:#f6f6f6;
-      box-shadow: 0 6px 18px rgba(0,0,0,.08);
+      background:#000000;
+      box-shadow: 0 6px 18px rgba(255, 255, 255, 0.08);
     }
     .tile img{
 
@@ -86,7 +86,7 @@
     .lightbox{
       position: fixed; inset:0;
       display:grid; place-items:center;
-      background: rgba(0,0,0,.75);
+      background: rgba(255, 255, 255, 0.75);
       z-index: 50;
       padding: clamp(12px, 4vw, 40px);
 
@@ -115,8 +115,8 @@
     .lightbox img{
       max-width:100%;
       max-height: 86vh;
-      box-shadow: 0 10px 40px rgba(0,0,0,.35);
-      background:#000;
+      box-shadow: 0 10px 40px rgba(255, 255, 255, 0.35);
+      background:#ffffff;
     }
 
     .lightbox .close{
@@ -124,10 +124,10 @@
       top:8px;
       right:8px;
       font-size:28px;
-      color:#000;
+      color:#ffffff;
       cursor:pointer;
       line-height:1;
-      background:#fff;
+      background:#000000;
       border:none;
       width:36px;
       height:36px;

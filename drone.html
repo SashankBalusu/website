@@ -11,9 +11,25 @@
     :root{
       --ink:#ffffff;
       --tint: rgba(0, 0, 0, 0.65);
+      --page-bg:#000000;
+      --link:pink;
+      --hairline: rgba(255, 255, 255, 0.06);
+      --tile-bg:#000000;
+      --tile-shadow:0 6px 18px rgba(255, 255, 255, 0.08);
+      --lightbox-bg:rgba(255, 255, 255, 0.75);
       --gap: 28px; 
       --nav-h: 56px;
       --cols: 3;
+    }
+    :root[data-theme="light"]{
+      --ink:#4d403b;
+      --tint:rgba(248, 244, 238, 0.78);
+      --page-bg:#f8f4ee;
+      --link:#d9819c;
+      --hairline:rgba(107, 82, 74, 0.12);
+      --tile-bg:#f2ece4;
+      --tile-shadow:0 6px 18px rgba(107, 82, 74, 0.14);
+      --lightbox-bg:rgba(248, 244, 238, 0.88);
     }
 
     *{ box-sizing:border-box; }
@@ -23,7 +39,7 @@
       margin:0;
       letter-spacing: -0.05em;
       color:var(--ink);
-      background:#000000;
+      background:var(--page-bg);
       -webkit-font-smoothing:antialiased;
       text-rendering:optimizeLegibility;
       -webkit-overflow-scrolling: touch;
@@ -36,21 +52,45 @@
       display:flex; align-items:center; justify-content:space-between;
       padding:0 24px;
       background:var(--tint);
-      backdrop-filter:blur(10px);
-      -webkit-backdrop-filter:blur(10px);
       z-index:10;
 
       will-change: transform;
       transform: translateZ(0);
     }
     .brand{ font-size:22px; }
-    .tabs{ display:flex; gap:18px; }
+    .tabs{ display:flex; align-items:center; gap:18px; }
     .tabs a{ color:var(--ink); text-decoration:none; font-size:18px; position:relative; }
     .tabs a::after{
       content:""; position:absolute; left:0; right:0; bottom:-2px; height:1px;
       background: currentColor; transform:scaleX(0); transform-origin:left; transition:.25s;
     }
     .tabs a:hover::after, .tabs a[aria-current="page"]::after{ transform:scaleX(1); }
+    .theme-toggle{
+      width:28px;
+      height:28px;
+      display:grid;
+      place-items:center;
+      padding:0;
+      border:1px solid var(--hairline);
+      border-radius:50%;
+      color:var(--ink);
+      background:transparent;
+      cursor:pointer;
+    }
+    .theme-toggle svg{
+      width:16px;
+      height:16px;
+      fill:none;
+      stroke:currentColor;
+      stroke-width:1.8;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+    }
+    .theme-toggle:hover,
+    .theme-toggle:focus-visible{
+      border-color:currentColor;
+      outline:none;
+    }
 
     main{ padding-top: calc(var(--nav-h) + 18px); }
     .gallery{ padding: 0 clamp(16px, 4vw, 48px) 72px; }
@@ -71,8 +111,8 @@
     .tile{
       position: relative;
       overflow: hidden; 
-      background:#000000;
-      box-shadow: 0 6px 18px rgba(255, 255, 255, 0.08);
+      background:var(--tile-bg);
+      box-shadow: var(--tile-shadow);
     }
     .tile img{
 
@@ -86,7 +126,7 @@
     .lightbox{
       position: fixed; inset:0;
       display:grid; place-items:center;
-      background: rgba(255, 255, 255, 0.75);
+      background: var(--lightbox-bg);
       z-index: 50;
       padding: clamp(12px, 4vw, 40px);
 
@@ -151,6 +191,13 @@
     <div class="brand"><a href="index.html">Sashank Balusu</a></div>
     <nav class="tabs">
       <a href="drone.html" aria-current="page">Pictures</a>
+      <button class="theme-toggle" type="button" aria-label="Switch to light mode" aria-pressed="false" title="Toggle light mode">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M9 18h6"/>
+          <path d="M10 22h4"/>
+          <path d="M8 14c-1.6-1.2-2.5-3-2.5-5a6.5 6.5 0 0 1 13 0c0 2-.9 3.8-2.5 5-.8.6-1.2 1.3-1.2 2H9.2c0-.7-.4-1.4-1.2-2Z"/>
+        </svg>
+      </button>
     </nav>
   </header>
 
@@ -168,6 +215,24 @@
   </div>
 
   <script>
+    const root = document.documentElement;
+    const themeToggle = document.querySelector('.theme-toggle');
+
+    function setTheme(theme) {
+      const light = theme === 'light';
+      root.dataset.theme = theme;
+      localStorage.setItem('theme', theme);
+      themeToggle.setAttribute('aria-pressed', String(light));
+      themeToggle.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
+    }
+
+    function toggleTheme() {
+      setTheme(root.dataset.theme === 'light' ? 'dark' : 'light');
+    }
+
+    setTheme(localStorage.getItem('theme') || 'light');
+    themeToggle.addEventListener('click', toggleTheme);
+
     let imageMeta = {};
 
     (function(){

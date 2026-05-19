@@ -45,7 +45,7 @@ window.GALLERY_CONFIG = {
   "drone18.JPG": {
     "city": "SF",
     "shape": "panorama",
-    "cols": 7,
+    "cols": 8,
     "rows": 4,
     "col": 5,
     "row": 2,
@@ -55,30 +55,30 @@ window.GALLERY_CONFIG = {
   "drone16.JPG": {
     "city": "SF",
     "shape": "wide",
-    "cols": 5,
-    "rows": 2,
-    "col": 5,
-    "row": 6,
+    "cols": 6,
+    "rows": 4,
+    "col": 1,
+    "row": 10,
     "x": 50,
     "y": 50
   },
   "drone15.JPG": {
     "city": "SF",
     "shape": "wide",
-    "cols": 5,
-    "rows": 2,
+    "cols": 6,
+    "rows": 4,
     "col": 7,
-    "row": 8,
-    "x": 50,
-    "y": 50
+    "row": 10,
+    "x": 72,
+    "y": 42
   },
   "A4F8DACB-DC46-44B3-8678-078CA15DAB47_1_105_c.jpg": {
     "city": "SF",
     "shape": "panorama",
     "cols": 8,
     "rows": 4,
-    "col": 3,
-    "row": 10,
+    "col": 5,
+    "row": 6,
     "x": 54,
     "y": 50
   },

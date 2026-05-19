@@ -1,11 +1,12 @@
 {
-    "name": "drone-thumbgen",
+    "name": "website-gallery",
     "version": "1.0.0",
     "type": "module",
     "private": true,
-    "description": "Generate responsive thumbnails (AVIF/WebP/JPEG) + imageMeta.json with LQIP placeholders.",
+    "description": "Ingest gallery originals and generate responsive thumbnails plus gallery metadata.",
     "scripts": {
-        "gen": "node thumbgen.js ./images ./public"
+        "ingest": "node scripts/ingest-gallery.js",
+        "ingest:from": "node scripts/ingest-gallery.js"
     },
     "dependencies": {
         "fast-glob": "^3.3.2",

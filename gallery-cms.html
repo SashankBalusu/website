@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gallery CMS</title>
+  <link rel="icon" href="pineappleicon.png" type="image/x-icon">
+  <style>
+    :root{
+      --bg:#050505;
+      --ink:#ffffff;
+      --muted:#929292;
+      --hair:#ffffff24;
+      --panel:#101010;
+      --accent:pink;
+      --panel-w:360px;
+    }
+    *{ box-sizing:border-box; }
+    html,
+    body{
+      height:100%;
+    }
+    body{
+      margin:0;
+      color:var(--ink);
+      background:var(--bg);
+      font-family:Arial, Helvetica, sans-serif;
+      line-height:1.4;
+      -webkit-font-smoothing:antialiased;
+      overflow:hidden;
+    }
+    .preview{
+      position:fixed;
+      inset:0 var(--panel-w) 0 0;
+      background:#000000;
+    }
+    iframe{
+      width:100%;
+      height:100%;
+      border:0;
+      display:block;
+      background:#000000;
+    }
+    .panel{
+      position:fixed;
+      inset:0 0 0 auto;
+      width:var(--panel-w);
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+      background:var(--panel);
+      border-left:1px solid var(--hair);
+      box-shadow:-18px 0 36px #00000070;
+      z-index:10;
+    }
+    header{
+      padding:16px;
+      border-bottom:1px solid var(--hair);
+    }
+    h1{
+      margin:0 0 6px;
+      font-size:18px;
+      font-weight:600;
+      letter-spacing:0;
+    }
+    p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .controls{
+      display:grid;
+      align-content:start;
+      gap:14px;
+      padding:16px;
+      overflow:auto;
+    }
+    .control{
+      display:grid;
+      gap:7px;
+    }
+    label{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    select,
+    input,
+    textarea,
+    button{
+      width:100%;
+      color:var(--ink);
+      background:#050505;
+      border:1px solid var(--hair);
+      border-radius:0;
+      font:inherit;
+    }
+    select,
+    input,
+    button{
+      min-height:38px;
+      padding:8px 10px;
+    }
+    input[type="range"]{
+      padding:0;
+      accent-color:var(--accent);
+    }
+    textarea{
+      min-height:190px;
+      padding:10px;
+      font-family:"Courier New", monospace;
+      font-size:12px;
+      resize:vertical;
+    }
+    button{
+      cursor:pointer;
+    }
+    button:hover{
+      border-color:var(--accent);
+    }
+    .row{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+    .footer{
+      display:grid;
+      gap:10px;
+      padding:16px;
+      border-top:1px solid var(--hair);
+    }
+    .links{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    a{
+      color:var(--accent);
+      text-decoration:none;
+    }
+    .status{
+      min-height:18px;
+      color:var(--muted);
+      font-size:12px;
+    }
+    @media (max-width:900px){
+      body{
+        overflow:auto;
+      }
+      .preview{
+        position:relative;
+        inset:auto;
+        height:62svh;
+      }
+      .panel{
+        position:relative;
+        inset:auto;
+        width:100%;
+        min-height:38svh;
+        border-left:none;
+        border-top:1px solid var(--hair);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="preview">
+    <iframe id="preview" src="drone.html" title="Gallery preview"></iframe>
+  </main>
+
+  <aside class="panel">
+    <header>
+      <h1>Gallery CMS</h1>
+      <p>Click a photo in the preview, then edit its city, size, and crop.</p>
+    </header>
+
+    <section class="controls">
+      <div class="control">
+        <label for="image">Image</label>
+        <select id="image"></select>
+      </div>
+
+      <div class="control">
+        <label for="city">City</label>
+        <select id="city">
+          <option value="Boston">Boston</option>
+          <option value="SF">SF</option>
+          <option value="South Bay">South Bay</option>
+          <option value="Berkeley">Berkeley</option>
+        </select>
+      </div>
+
+      <div class="control">
+        <label for="shape">Preset</label>
+        <select id="shape">
+          <option value="wide">Wide</option>
+          <option value="panorama">Panorama</option>
+          <option value="square">Square</option>
+          <option value="tall">Tall</option>
+          <option value="portrait">Portrait</option>
+        </select>
+      </div>
+
+      <div class="control">
+        <label for="cols">Gallery width <span id="cols-value">4</span></label>
+        <input id="cols" type="range" min="2" max="8" value="4">
+      </div>
+
+      <div class="control">
+        <label for="rows">Gallery height <span id="rows-value">3</span></label>
+        <input id="rows" type="range" min="2" max="8" value="3">
+      </div>
+
+      <div class="control">
+        <label for="col">Column start <span id="col-value">auto</span></label>
+        <input id="col" type="range" min="0" max="12" value="0">
+      </div>
+
+      <div class="control">
+        <label for="row">Row start <span id="row-value">auto</span></label>
+        <input id="row" type="range" min="0" max="24" value="0">
+      </div>
+
+      <div class="control">
+        <label for="crop-x">Horizontal crop <span id="crop-x-value">50%</span></label>
+        <input id="crop-x" type="range" min="0" max="100" value="50">
+      </div>
+
+      <div class="control">
+        <label for="crop-y">Vertical crop <span id="crop-y-value">50%</span></label>
+        <input id="crop-y" type="range" min="0" max="100" value="50">
+      </div>
+
+      <div class="row">
+        <button id="reset-image" type="button">Reset Image</button>
+        <button id="clear-draft" type="button">Clear Draft</button>
+      </div>
+
+      <div class="control">
+        <label for="export">Current Config</label>
+        <textarea id="export" spellcheck="false"></textarea>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="status" id="status"></div>
+      <div class="links">
+        <a href="drone.html">Open gallery</a>
+      </div>
+    </footer>
+  </aside>
+
+  <script src="./assets/galleryConfig.js"></script>
+  <script>
+    const config = window.GALLERY_CONFIG || {};
+    const imageOrder = config.imageOrder || [];
+    const baseline = config.cropByImage || {};
+    const fallbackCity = config.cityByImage || {};
+    const draftKey = 'galleryCropDraftV2';
+    localStorage.removeItem('galleryCropDraft');
+
+    let draft = JSON.parse(localStorage.getItem(draftKey) || '{}');
+    let activeImage = imageOrder[0];
+    let reloadTimer = 0;
+    let previewScrollY = 0;
+
+    const preview = document.getElementById('preview');
+    const image = document.getElementById('image');
+    const city = document.getElementById('city');
+    const shape = document.getElementById('shape');
+    const cols = document.getElementById('cols');
+    const rows = document.getElementById('rows');
+    const col = document.getElementById('col');
+    const row = document.getElementById('row');
+    const cropX = document.getElementById('crop-x');
+    const cropY = document.getElementById('crop-y');
+    const colsValue = document.getElementById('cols-value');
+    const rowsValue = document.getElementById('rows-value');
+    const colValue = document.getElementById('col-value');
+    const rowValue = document.getElementById('row-value');
+    const cropXValue = document.getElementById('crop-x-value');
+    const cropYValue = document.getElementById('crop-y-value');
+    const exportBox = document.getElementById('export');
+    const status = document.getElementById('status');
+
+    const shapeDefaults = {
+      wide: { cols: 5, rows: 3 },
+      panorama: { cols: 7, rows: 3 },
+      square: { cols: 4, rows: 4 },
+      tall: { cols: 4, rows: 6 },
+      portrait: { cols: 3, rows: 6 }
+    };
+
+    function getConfig(src){
+      return {
+        city: fallbackCity[src] || 'Boston',
+        shape: 'wide',
+        cols: 4,
+        rows: 3,
+        col: 0,
+        row: 0,
+        x: 50,
+        y: 50,
+        ...(baseline[src] || {}),
+        ...(draft[src] || {})
+      };
+    }
+
+    function writeDraft(src, value, reload = true){
+      draft[src] = value;
+      localStorage.setItem(draftKey, JSON.stringify(draft));
+      renderExport();
+      if (reload) schedulePreviewReload();
+    }
+
+    function currentValue(){
+      return {
+        city: city.value,
+        shape: shape.value,
+        cols: Number(cols.value),
+        rows: Number(rows.value),
+        col: Number(col.value),
+        row: Number(row.value),
+        x: Number(cropX.value),
+        y: Number(cropY.value)
+      };
+    }
+
+    function renderImageOptions(){
+      image.innerHTML = '';
+      imageOrder.forEach(src => {
+        const option = document.createElement('option');
+        option.value = src;
+        option.textContent = `${src} - ${getConfig(src).city}`;
+        image.appendChild(option);
+      });
+      image.value = activeImage;
+    }
+
+    function renderControls(){
+      const data = getConfig(activeImage);
+      image.value = activeImage;
+      city.value = data.city;
+      shape.value = data.shape;
+      cols.value = data.cols;
+      rows.value = data.rows;
+      col.value = data.col;
+      row.value = data.row;
+      cropX.value = data.x;
+      cropY.value = data.y;
+      colsValue.textContent = data.cols;
+      rowsValue.textContent = data.rows;
+      colValue.textContent = data.col ? data.col : 'auto';
+      rowValue.textContent = data.row ? data.row : 'auto';
+      cropXValue.textContent = `${data.x}%`;
+      cropYValue.textContent = `${data.y}%`;
+    }
+
+    function renderExport(){
+      const merged = {};
+      imageOrder.forEach(src => {
+        merged[src] = getConfig(src);
+      });
+      exportBox.value = JSON.stringify(merged, null, 2);
+      renderImageOptions();
+    }
+
+    function selectImage(src){
+      if (!src) return;
+      activeImage = src;
+      renderControls();
+      markSelectedInPreview();
+    }
+
+    function updateActive(reload = true){
+      writeDraft(activeImage, currentValue(), reload);
+      renderControls();
+      applyLivePreview();
+      if (!reload) {
+        status.textContent = 'Live preview updated';
+      }
+    }
+
+    function schedulePreviewReload(){
+      window.clearTimeout(reloadTimer);
+      status.textContent = 'Updating preview...';
+      reloadTimer = window.setTimeout(() => {
+        previewScrollY = preview.contentWindow?.scrollY || 0;
+        preview.contentWindow.location.reload();
+      }, 180);
+    }
+
+    function markSelectedInPreview(){
+      const doc = preview.contentDocument;
+      if (!doc) return;
+      doc.querySelectorAll('.tile').forEach(tile => {
+        const src = tile.querySelector('img')?.alt;
+        const selected = src === activeImage;
+        tile.style.outline = selected ? '2px solid pink' : '';
+        tile.style.outlineOffset = selected ? '4px' : '';
+        tile.style.zIndex = selected ? '20' : '';
+      });
+    }
+
+    function getSelectedPreviewTiles(){
+      const doc = preview.contentDocument;
+      if (!doc) return [];
+      return Array.from(doc.querySelectorAll('.tile')).filter(tile => tile.querySelector('img')?.alt === activeImage);
+    }
+
+    function applyLivePreview(){
+      const tiles = getSelectedPreviewTiles();
+      if (!tiles.length) return;
+      const data = getConfig(activeImage);
+      tiles.forEach(tile => {
+        tile.style.setProperty('--crop-x', `${data.x}%`);
+        tile.style.setProperty('--crop-y', `${data.y}%`);
+        tile.style.gridColumn = data.col ? `${data.col} / span ${data.cols}` : `auto / span ${data.cols}`;
+        tile.style.gridRow = data.row ? `${data.row} / span ${data.rows}` : `span ${data.rows}`;
+        tile.style.zIndex = '20';
+        const img = tile.querySelector('img');
+        if (img) img.style.objectPosition = `${data.x}% ${data.y}%`;
+      });
+    }
+
+    function attachPreviewSelection(){
+      const doc = preview.contentDocument;
+      if (!doc) return;
+
+      if (previewScrollY) {
+        preview.contentWindow.scrollTo(0, previewScrollY);
+      }
+
+      doc.addEventListener('click', event => {
+        const tile = event.target.closest?.('.tile');
+        if (!tile) return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
+        const src = tile.querySelector('img')?.alt;
+        selectImage(src);
+        status.textContent = `Selected ${src}`;
+      }, true);
+
+      const markEditableTiles = () => {
+        doc.querySelectorAll('.tile').forEach(tile => {
+          tile.style.cursor = 'crosshair';
+        });
+        markSelectedInPreview();
+      };
+
+      markEditableTiles();
+      new MutationObserver(markEditableTiles).observe(doc.body, { childList: true, subtree: true });
+
+      status.textContent = 'Preview ready';
+    }
+
+    image.addEventListener('change', () => selectImage(image.value));
+    city.addEventListener('change', updateActive);
+    cols.addEventListener('input', updateActive);
+    rows.addEventListener('input', updateActive);
+    col.addEventListener('input', () => updateActive(false));
+    row.addEventListener('input', () => updateActive(false));
+    cropX.addEventListener('input', () => updateActive(false));
+    cropY.addEventListener('input', () => updateActive(false));
+    shape.addEventListener('change', () => {
+      const defaults = shapeDefaults[shape.value] || shapeDefaults.wide;
+      cols.value = defaults.cols;
+      rows.value = defaults.rows;
+      updateActive();
+    });
+
+    document.getElementById('reset-image').addEventListener('click', () => {
+      delete draft[activeImage];
+      localStorage.setItem(draftKey, JSON.stringify(draft));
+      renderControls();
+      renderExport();
+      schedulePreviewReload();
+    });
+
+    document.getElementById('clear-draft').addEventListener('click', () => {
+      draft = {};
+      localStorage.removeItem(draftKey);
+      renderControls();
+      renderExport();
+      schedulePreviewReload();
+    });
+
+    preview.addEventListener('load', attachPreviewSelection);
+    renderImageOptions();
+    renderControls();
+    renderExport();
+  </script>
+</body>
+</html>

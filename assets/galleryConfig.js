@@ -117,7 +117,7 @@ window.GALLERY_CONFIG = {
     "shape": "wide",
     "cols": 5,
     "rows": 3,
-    "col": 8,
+    "col": 1,
     "row": 6,
     "x": 50,
     "y": 50

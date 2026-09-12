@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>SoFi Studio — Sashank Balusu</title>
+  <link rel="icon" href="pineappleicon.png">
+  <link rel="stylesheet" href="assets/stadium.css">
+  <link rel="stylesheet" href="assets/stadium-editor.css">
+  <script type="importmap">{"imports":{"three":"./assets/vendor/three/three.module.min.js"}}</script>
+</head>
+<body>
+  <header class="editor-header">
+    <a class="editor-brand" href="./" aria-label="Back to homepage">S<span>/</span><span>SOFI STUDIO</span></a>
+    <span class="editor-save-state" id="save-state">Loading your workspace…</span>
+    <div class="header-actions">
+      <a href="./?stadium-preview=1" id="preview-home" target="_blank" rel="noopener">Preview on site ↗</a>
+      <button id="export-preset" class="primary" type="button" disabled>Export preset ↓</button>
+    </div>
+  </header>
+  <main class="editor-layout">
+    <section class="editor-stage" aria-label="Live stadium preview">
+      <div class="stage-heading"><span class="eyebrow">YOUR ARCHITECTURAL PLAYGROUND</span><h1>Make it yours.</h1><p>Small changes. A different feeling.</p></div>
+      <figure class="stadium-scene" data-ready="false" aria-labelledby="stadium-title">
+        <div class="stadium-viewport"><img class="stadium-poster stadium-poster-day" src="assets/sofi-poster.png" alt="The site's SoFi Stadium miniature" width="960" height="880"><img class="stadium-poster stadium-poster-night" src="assets/sofi-poster-night.png" alt="The site's SoFi Stadium miniature at night" width="960" height="880"></div>
+        <figcaption class="stadium-caption">
+          <div><span class="stadium-title" id="stadium-title">SOFI STADIUM · BOLT UP</span><span class="editor-stats" id="scene-stats">Loading the miniature</span></div>
+          <div class="stadium-controls">
+            <button class="stadium-theme" data-theme-toggle type="button" aria-label="Switch to night mode"><span data-theme-label>Night game</span></button>
+            <button type="button" data-scene-action="zoom-out" aria-label="Zoom out" disabled>−</button>
+            <button type="button" data-scene-action="zoom-in" aria-label="Zoom in" disabled>+</button>
+            <button type="button" data-scene-action="reset" aria-label="Reset stadium view" disabled>↺</button>
+            <button type="button" data-scene-action="particles" aria-label="Pause lightning" aria-pressed="false" title="Pause lightning" disabled>Ⅱ</button>
+          </div>
+          <p class="stadium-hint">Drag to explore · a little Bolt Up energy</p>
+          <span class="stadium-sr-only" id="stadium-keyboard-help">Use arrows to rotate and tilt, plus or minus to zoom, and Home to reset. Use the pause lightning button to stop the bursts.</span>
+          <span class="stadium-sr-only" data-scene-status role="status"></span>
+        </figcaption>
+      </figure>
+      <div class="stage-toolbar">
+        <div class="view-switcher" aria-label="Camera views">
+          <button type="button" data-view="home" disabled>3/4</button><button type="button" data-view="front" disabled>Front</button><button type="button" data-view="side" disabled>Side</button><button type="button" data-view="top" disabled>Top</button>
+        </div>
+        <button id="compare" type="button" aria-pressed="false" disabled>Compare with site</button>
+      </div>
+      <p id="editor-message" role="status" aria-live="polite">Everything here is a local draft. Nothing is published automatically.</p>
+    </section>
+    <aside class="editor-panel" aria-label="Model settings">
+      <div class="panel-heading"><div><span class="eyebrow">LIVE CONTROLS</span><h2>Find the right feel.</h2></div><div class="history-actions"><button id="undo" aria-label="Undo change" title="Undo (⌘/Ctrl Z)" type="button" disabled>↶</button><button id="redo" aria-label="Redo change" title="Redo (⌘/Ctrl Shift Z)" type="button" disabled>↷</button></div></div>
+      <div class="panel-scroll">
+        <div id="parameter-groups"></div>
+        <details class="control-group" id="versions"><summary><span class="group-number">07</span>Versions & export</summary><div class="group-content">
+          <label class="field-label" for="preset-name">Name this version</label><input id="preset-name" type="text" maxlength="80" value="My SoFi" autocomplete="off">
+          <button id="save-version" type="button" disabled>Save a copy in this browser</button>
+          <label class="field-label" for="saved-versions">Saved versions</label><div class="inline-actions"><select id="saved-versions"><option value="">No saved versions yet</option></select><button id="load-version" type="button" disabled>Load</button></div>
+          <div class="inline-actions"><button id="import-preset" type="button" disabled>Import preset…</button><button id="export-poster" type="button" disabled>Download poster</button></div>
+          <input id="preset-file" type="file" accept=".json,application/json" hidden>
+          <p class="help">Presets are small JSON files. Textures are generated patterns and material settings; this editor doesn’t import photo textures or sculpt individual vertices.</p>
+          <div class="publish-note"><strong>When you’re happy with it</strong><p>Export the preset and replace <code>assets/stadium-preset.json</code> in your project. Download a poster in each theme to replace <code>assets/sofi-poster.png</code> and <code>assets/sofi-poster-night.png</code>, then deploy normally. Or give me the exported preset and I can apply it.</p><p>“Preview on site” shows your draft only in this browser, at a special preview link.</p></div>
+        </div></details>
+      </div>
+      <footer class="panel-footer"><button id="reset-model" type="button" disabled>Reset to original</button><button id="load-site" type="button" disabled>Load site preset</button><span>Resets are undoable. Your camera stays put.</span></footer>
+    </aside>
+  </main>
+  <noscript>This editor needs JavaScript and WebGL. Your homepage still works without the editor.</noscript>
+  <script src="assets/theme.js"></script>
+  <script type="module" src="assets/stadium-editor.js"></script>
+</body>
+</html>

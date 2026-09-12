@@ -1,0 +1,87 @@
+.stadium-scene {
+  margin: 0;
+  color: var(--ink);
+  letter-spacing: 0;
+}
+.stadium-viewport {
+  position: relative;
+  height: min(66vh, 660px);
+  min-height: 360px;
+  isolation: isolate;
+}
+.stadium-viewport canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  border-radius: 12px;
+  touch-action: pan-y;
+}
+.stadium-viewport canvas:active { cursor: grabbing; }
+.stadium-viewport canvas:focus-visible { outline: 1px solid var(--link); outline-offset: -5px; }
+.stadium-poster {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  transition: opacity .35s ease;
+}
+.stadium-scene[data-ready="true"] .stadium-poster { opacity: 0; }
+.stadium-scene[data-ready="false"] canvas { visibility: hidden; }
+:root[data-theme="dark"] .stadium-poster { filter: brightness(.7) saturate(.85); }
+.stadium-poster-night { display: none; }
+:root[data-theme="dark"] .stadium-poster-day { display: none; }
+:root[data-theme="dark"] .stadium-poster-night { display: block; filter: none; }
+.stadium-caption { padding: 0 7%; }
+.stadium-preview-notice { display: block; margin-bottom: 14px; font: 11px/1.5 monospace; }
+.stadium-caption-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.stadium-title { font: 11px/1.5 'IBM Plex Mono', monospace; letter-spacing: .16em; }
+.stadium-location { display: block; margin-top: 5px; font-size: 13px; opacity: .6; }
+.stadium-controls { display: flex; align-items: center; gap: 5px; }
+.stadium-controls button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: 12px 'IBM Plex Mono', monospace;
+}
+.stadium-controls .stadium-theme { border-radius: 20px; padding: 0 12px; margin-right: 3px; border-color: var(--hairline); white-space: nowrap; flex-shrink: 0; }
+.stadium-controls button:hover, .stadium-controls button:focus-visible { border-color: var(--link); outline: none; }
+.stadium-controls button:disabled { opacity: .3; cursor: default; }
+.stadium-controls svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.content .stadium-hint { margin: 18px 0 0; font: 10px/1.7 'IBM Plex Mono', monospace; letter-spacing: .025em; opacity: .5; }
+.stadium-sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* The text determines the desktop row height. The model fills the adjacent
+   column, keeping its center aligned with the copy instead of the window. */
+.home-stadium { position: relative; align-self: stretch; min-width: 0; }
+.home-stadium .stadium-viewport { position: absolute; inset: 0; height: 100%; min-height: 0; }
+@media (max-width: 1050px) {
+  .home-stadium { display: none; }
+  .stadium-scene { position: relative; top: auto; right: auto; transform: none; width: 100%; max-width: 700px; margin: -30px auto 40px; }
+  .stadium-viewport { height: clamp(340px, 65vw, 530px); min-height: 0; }
+  .stadium-caption { padding: 0 3%; }
+}
+@media (max-width: 480px) {
+  .stadium-scene { width: calc(100% + 24px); margin-left: -12px; }
+  .stadium-viewport { height: 340px; }
+  .stadium-caption { padding: 0 12px; }
+  .stadium-caption-top { gap: 5px; }
+  .stadium-title { font-size: 10px; letter-spacing: .1em; }
+  .stadium-location { font-size: 12px; }
+  .stadium-controls { gap: 0; }
+  .stadium-controls button { min-width: 32px; padding: 0 6px; }
+  .stadium-controls .stadium-theme { padding: 0 8px; font-size: 10px; }
+  .content .stadium-hint { font-size: 9px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stadium-poster { transition: none; }
+}

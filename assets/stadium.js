@@ -11,6 +11,9 @@ import { createFieldTexture, createBoardTexture, createCladdingTexture, createFr
 
 const TAU = Math.PI * 2;
 const v3 = (x, y, z) => new THREE.Vector3(x, y, z);
+// Low side elevation, with the theater to the left and the long foundation
+// edge level, matching the chosen opening view. Keep the editor's 3/4 view.
+const homeCameraPosition = [3.891, 12.276, -36.98];
 const framingFov = aspect => Math.max(33, THREE.MathUtils.radToDeg(
   2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(42) / 2) / aspect)));
 
@@ -464,7 +467,8 @@ export async function mountStadium(figure, showFallback, options = {}) {
   const camera = new THREE.PerspectiveCamera(33, 1, .1, 150);
   // Balance the widened, offset sail in the frame, including its low point.
   const target = v3(1.65, .4, -.5);
-  const initialPosition = v3(19.5, 19, 28);
+  const initialPosition = options.presentation === 'homepage'
+    ? v3(...homeCameraPosition) : v3(19.5, 19, 28);
   camera.position.copy(initialPosition);
   const controls = new OrbitControls(camera, canvas);
   controls.target.copy(target);
@@ -671,7 +675,7 @@ export async function mountStadium(figure, showFallback, options = {}) {
     if (lost || disposed) throw new Error('The 3D preview is unavailable.');
     const size = renderer.getSize(new THREE.Vector2()), ratio = renderer.getPixelRatio();
     const posterCamera = new THREE.PerspectiveCamera(framingFov(960 / 880), 960 / 880, .1, 150);
-    posterCamera.position.copy(initialPosition); posterCamera.lookAt(target);
+    posterCamera.position.set(...homeCameraPosition); posterCamera.lookAt(target);
     frameStadiumCamera(THREE, posterCamera, modelData.framingSurfaces, 960, 880);
     const effectTime = lightning.uniforms.uTime.value;
     try {

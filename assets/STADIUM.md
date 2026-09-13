@@ -78,7 +78,9 @@ count are stylized; no third-party stadium mesh or photograph is included.
 - `stadium.js` builds the exterior architecture, lighting and camera controls.
 - `stadium-framing.js` centers the projected building outline beside the text,
   enlarging the homepage view by up to 28% while preserving edge clearance.
-  Poster exports share this framing; the editor keeps its working camera.
+  The opening view is a low side elevation with the theater on the left and
+  the long foundation edge level. Poster exports share this view and framing;
+  the editor keeps its working camera and original 3/4 inspection view.
 - `stadium-interior.js` builds the batched seating, concourses, field and screen.
   It is independent of the DOM and has a bounded geometry budget.
 - `stadium-textures.js` generates the cladding, ETFE frit, paving, pitch, screen

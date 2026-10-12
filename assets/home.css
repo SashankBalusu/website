@@ -1,0 +1,51 @@
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--page-bg);
+  transition: background-color .3s ease, color .3s ease;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+button, a { -webkit-tap-highlight-color: transparent; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.home-view { position: relative; display: grid; grid-template-rows: 1fr auto; min-height: max(520px, 100svh); }
+.home-stage { position: relative; isolation: isolate; display: grid; align-items: center; min-height: 420px; padding: 64px 32px 40px; }
+.ribbon-center { position: absolute; z-index: 0; top: 50%; left: 50%; width: min(420px, 96%); height: 330px; transform: translate(-50%, -50%); transition: opacity .45s ease, transform .6s cubic-bezier(.2, .7, .2, 1); }
+.home-stage::before { content: ''; position: absolute; z-index: 1; inset: 0; pointer-events: none; background: color-mix(in srgb, var(--page-bg) 28%, transparent); -webkit-backdrop-filter: blur(22px) saturate(.8); backdrop-filter: blur(22px) saturate(.8); opacity: 0; visibility: hidden; transition: opacity .45s ease, visibility 0s .45s; }
+.home-view[data-info-open="true"] .home-stage::before { opacity: 1; visibility: visible; transition-delay: 0s; }
+.home-view[data-info-open="true"] .ribbon-center { opacity: .55; transform: translate(-50%, -50%) scale(1.12); }
+.ribbon-mark { position: relative; display: block; width: 100%; height: 100%; appearance: none; padding: 0; border: 0; background: transparent; cursor: grab; touch-action: pan-y; }
+.ribbon-mark:active { cursor: grabbing; }
+.ribbon-mark canvas { position: relative; display: block; width: 100%; height: 100%; }
+.ribbon-fallback { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.ribbon-fallback img { width: auto; height: 100%; position: absolute; top: 0; left: 50%; transform: translateX(-50%); }
+.ribbon-poster-day { display: none; }
+:root[data-theme="light"] .ribbon-poster-day { display: block; }
+:root[data-theme="light"] .ribbon-poster-night { display: none; }
+.ribbon-mark[data-ready="true"] .ribbon-fallback { visibility: hidden; }
+.home-navigation { position: relative; display: flex; justify-content: flex-start; align-items: center; gap: 24px; margin: 0 40px 30px; font-size: 12px; letter-spacing: .01em; }
+.home-navigation a, .info-link { display: inline-flex; min-height: 44px; align-items: center; text-decoration: none; }
+.info-link { appearance: none; border: 0; padding: 0; background: none; color: inherit; font: inherit; letter-spacing: inherit; cursor: pointer; }
+.home-navigation a:hover, .info-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+.info-view { position: relative; z-index: 2; display: grid; grid-template-rows: 0fr; width: min(100%, 390px); margin: 0 auto; opacity: 0; visibility: hidden; transform: translateY(8px); transition: opacity .35s ease, transform .45s ease, grid-template-rows .45s ease, visibility 0s .45s; }
+.home-view[data-info-open="true"] .info-view { grid-template-rows: 1fr; opacity: 1; visibility: visible; transform: translateY(0); transition-delay: .08s, .08s, 0s, 0s; }
+.info-copy { min-height: 0; overflow: hidden; font-size: 15px; line-height: 1.75; }
+.info-copy h2 { margin: 0 0 24px; font-size: 26px; font-weight: 500; line-height: 1.2; letter-spacing: -.04em; }
+.info-copy h2:focus { outline: none; }
+.info-copy p { margin: 0; }
+.work-list { margin: 30px 0 0; padding: 0; list-style: none; }
+.work-list li + li { margin-top: 22px; }
+.work-role { font-weight: 500; }
+.work-list .work-description { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+.work-list a { color: var(--ink); text-underline-offset: 3px; }
+.work-list a:hover { color: var(--link); }
+@media (max-width: 560px) {
+  .home-stage { padding: 48px 32px 32px; }
+  .ribbon-center { height: 300px; }
+  .home-navigation { margin: 0 26px 26px; }
+  .info-copy h2 { font-size: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body, .ribbon-center, .home-stage::before, .info-view { transition: none; }
+}

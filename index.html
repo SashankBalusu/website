@@ -1,142 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light" data-theme-mode="system">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sashank Balusu — engineering, photography, and a little Bolt Up energy.">
   <title>Sashank Balusu</title>
   <link rel="icon" href="pineappleicon.png" type="image/x-icon">
-  <style>
-    :root {
-      --ink: #eee8e2;
-      --muted: #a99d96;
-      --tint: rgba(0, 0, 0, .84);
-      --hairline: rgba(238, 232, 226, .14);
-      --page-bg: #000000;
-      --link: #d796aa;
-    }
-    :root[data-theme="light"] {
-      --ink: #493d39;
-      --muted: #7c6c65;
-      --tint: rgba(248, 244, 238, .92);
-      --hairline: rgba(107, 82, 74, .16);
-      --page-bg: #f8f4ee;
-      --link: #995069;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      color: var(--ink);
-      background: var(--page-bg);
-      font: 17px/1.65 Georgia, 'Times New Roman', serif;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-      transition: background .25s ease, color .25s ease;
-    }
-    a {
-      color: var(--link);
-      text-decoration-thickness: 1px;
-      text-underline-offset: .18em;
-    }
-    a:hover { text-decoration-color: transparent; }
-    :focus-visible { outline: 2px solid var(--link); outline-offset: 5px; }
-    .content {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
-      column-gap: clamp(32px, 4vw, 64px);
-      max-width: 1440px;
-      margin: 0 auto;
-      padding: clamp(112px, 13vh, 152px) clamp(24px, 5vw, 80px) 96px;
-    }
-    .home-copy { min-width: 0; }
-    h1 {
-      margin: 0 0 22px;
-      font-size: clamp(44px, 4.4vw, 60px);
-      font-weight: 400;
-      line-height: 1.12;
-      letter-spacing: -.045em;
-    }
-    .accent { color: var(--link); }
-    .intro { max-width: 44ch; margin: 0; font-size: 19px; line-height: 1.65; }
-    .work { margin-top: 46px; }
-    .work h2 {
-      margin: 0 0 16px;
-      font-size: 18px;
-      font-weight: 600;
-      line-height: 1.5;
-    }
-    .work-list { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none; }
-    .work-role { margin: 0; font-size: 17px; font-weight: 400; line-height: 1.5; }
-    .work-description { max-width: 56ch; margin: 5px 0 0 10px; font-size: 16px; line-height: 1.6; }
-    .work-description a { white-space: nowrap; }
-    @media (max-width: 1050px) {
-      .content { grid-template-columns: minmax(0, 1fr); max-width: 760px; padding-top: 116px; }
-      .intro { max-width: 46ch; }
-    }
-    @media (max-width: 600px) {
-      .content { padding-top: 110px; padding-bottom: 64px; }
-      h1 { font-size: clamp(40px, 10vw, 48px); margin-bottom: 20px; }
-      .intro { font-size: 18px; }
-      .work { margin-top: 40px; }
-    }
-    @media (prefers-reduced-motion: reduce) { body { transition: none; } }
-  </style>
+  <script>
+    (() => {
+      let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      try {
+        const saved = localStorage.getItem('site-theme');
+        if (saved === 'light' || saved === 'dark') theme = saved;
+      } catch { /* Use the system theme. */ }
+      document.documentElement.dataset.theme = theme;
+    })();
+  </script>
   <link rel="stylesheet" href="assets/site-header.css">
-  <link rel="stylesheet" href="assets/stadium.css">
+  <link rel="stylesheet" href="assets/home.css?v=bottom-nav-1">
   <script type="importmap">
     { "imports": { "three": "./assets/vendor/three/three.module.min.js" } }
   </script>
 </head>
-<body>
-  <header class="nav">
-    <div class="brand">
-      <a href="index.html" aria-current="page">Sashank Balusu</a>
-    </div>
-    <nav class="tabs" aria-label="Primary">
-      <a href="drone.html">Pictures</a>
-      <button class="theme-toggle" data-theme-toggle type="button" aria-label="Switch to light mode" aria-pressed="false" title="Toggle light mode">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M9 18h6"/>
-          <path d="M10 22h4"/>
-          <path d="M8 14c-1.6-1.2-2.5-3-2.5-5a6.5 6.5 0 0 1 13 0c0 2-.9 3.8-2.5 5-.8.6-1.2 1.3-1.2 2H9.2c0-.7-.4-1.4-1.2-2Z"/>
-        </svg>
-      </button>
-    </nav>
-  </header>
-
-  <main class="content">
-    <div class="home-copy">
-      <h1>Hi, I'm <span class="accent">Sashank</span>.</h1>
-      <p class="intro">I like drones, photography, and the Chargers. I also study EECS at Berkeley.</p>
-
-      <section class="work" id="experience" aria-labelledby="work-title">
-        <h2 id="work-title">Work:</h2>
-        <ul class="work-list">
-          <li>
-            <h3 class="work-role">Founding Engineer @ Biography</h3>
-            <p class="work-description">Engineer #1. <a href="https://biography.industries" target="_blank" rel="noopener noreferrer">Built</a> a graph-powered relational data layer for AI. Scaled to thousands of users and raised a $5.5M seed.</p>
-          </li>
-          <li>
-            <h3 class="work-role">Backend @ Amazon</h3>
-            <p class="work-description">Transaction persistence and automated cleanup of orphaned files in <a href="https://github.com/ray-project/deltacat" target="_blank" rel="noopener noreferrer">DeltaCat 2.0</a>.</p>
-          </li>
-        </ul>
-      </section>
-    </div>
-
-    <figure class="stadium-scene home-stadium" id="stadium-preview" aria-labelledby="stadium-title" data-ready="false">
-      <div class="stadium-viewport">
-        <img class="stadium-poster stadium-poster-day" src="assets/sofi-poster.png" alt="SoFi Stadium's sweeping silver roof with a delicate branching lightning arc." width="960" height="880" loading="lazy">
-        <img class="stadium-poster stadium-poster-night" src="assets/sofi-poster-night.png" alt="SoFi Stadium at night, with a cyan roof outline and warm illuminated entrances." width="960" height="880" loading="lazy">
+<body class="home-page">
+  <main>
+    <section class="home-view" id="home" aria-label="Home">
+      <h1 class="sr-only">Sashank Balusu</h1>
+      <div class="home-stage">
+        <div class="ribbon-center">
+          <button type="button" class="ribbon-mark" data-ribbon aria-label="Send a charge to switch color theme" aria-describedby="ribbon-help">
+            <span class="ribbon-fallback" aria-hidden="true">
+              <img class="ribbon-poster-day" src="assets/ribbon-poster.webp" alt="" width="840" height="660" fetchpriority="high">
+              <img class="ribbon-poster-night" src="assets/ribbon-poster-night.webp" alt="" width="840" height="660" fetchpriority="high">
+            </span>
+          </button>
+          <p class="sr-only" id="ribbon-help">Copper ribbon wires form the initials SB. Click or press Enter to send a charge along the wires and switch between light and dark mode when it finishes. Drag or use the arrow keys to rotate. Home restores the starting view.</p>
+        </div>
+        <section class="info-view" id="info" aria-labelledby="info-title" aria-hidden="true" inert>
+          <div class="info-copy">
+            <h2 id="info-title" tabindex="-1">Sashank Balusu</h2>
+            <p>I like drones, photography, and the Chargers. I also study EECS at Berkeley.</p>
+            <ul class="work-list">
+              <li>
+                <p class="work-role">Google</p>
+                <p class="work-description">Built infrastructure to help <a href="https://cloud.google.com/" target="_blank" rel="noopener noreferrer">Google Cloud</a> autonomously detect more risks faster.</p>
+              </li>
+              <li>
+                <p class="work-role">Biography</p>
+                <p class="work-description">Engineer #1. <a href="https://biography.industries" target="_blank" rel="noopener noreferrer">Built</a> a graph-powered relational data layer for AI. Scaled to thousands of users and raised a $5.5M seed.</p>
+              </li>
+              <li>
+                <p class="work-role">Amazon</p>
+                <p class="work-description">Transaction persistence and automated cleanup of orphaned files in <a href="https://github.com/ray-project/deltacat" target="_blank" rel="noopener noreferrer">DeltaCat 2.0</a>.</p>
+              </li>
+            </ul>
+          </div>
+        </section>
       </div>
-      <figcaption class="stadium-caption stadium-sr-only">
-        <span class="stadium-title" id="stadium-title">SOFI STADIUM</span>
-        <p class="stadium-hint">Drag to explore · a little Bolt Up energy</p>
-        <span id="stadium-keyboard-help">Use left and right arrow keys to rotate, up and down to tilt, plus and minus to zoom, and Home to reset. Press P to pause or resume lightning.</span>
-        <span data-scene-status role="status"></span>
-      </figcaption>
-    </figure>
+      <nav class="home-navigation" aria-label="Primary">
+        <button class="info-link" type="button" aria-expanded="false" aria-controls="info">Info</button>
+        <a class="pictures-link" href="drone.html">Pictures</a>
+      </nav>
+    </section>
   </main>
   <script src="assets/theme.js"></script>
-  <script type="module" src="assets/stadium-loader.js"></script>
+  <script type="module" src="assets/home.js"></script>
 </body>
 </html>
